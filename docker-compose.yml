@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  counterdb.api:
+    image: ${DOCKER_REGISTRY-}counterdbapi
+    build:
+      context: .
+      dockerfile: CounterDB.API/Dockerfile
+    environment:
+    - DB_CONNECTION_STRING=User ID=postgres;Password=password;Host=db;Port=5432;Database=counters
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=password
+    ports:
+    - 5432:5432
+    volumes:
+    - ./db-data/:/var/lib/postgresql/data/:z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      start_period: 5s
+      retries: 3
