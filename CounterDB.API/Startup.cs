@@ -1,4 +1,5 @@
 using CounterDB.API.Data;
+using CounterDB.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,8 @@ namespace CounterDB.API
         {
             services.AddEntityFrameworkNpgsql().AddDbContext<CounterContext>(option =>
                 option.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")));
+
+            services.AddTransient<CounterService>();
 
             services.AddControllers();
 
